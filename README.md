@@ -27,7 +27,7 @@ Set environment variables for AWS_SSH_KEY_ID and AWS_SSH_KEY
 
 ````
 export AWS_SSH_KEY_ID=docker
-export AWS_SSH_KEY=docker.pem
+export AWS_SSH_KEY=<path to file>/docker.pem
 ````
 
 Clone this repo
