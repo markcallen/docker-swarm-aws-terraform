@@ -1,0 +1,56 @@
+{
+  "variables": {
+    "aws_default_region": "{{env `AWS_DEFAULT_REGION`}}",
+    "aws_vpc_id": "{{env `AWS_VPC_ID`}}",
+    "aws_subnet_id": "{{env `AWS_SUBNET_ID`}}",
+    "aws_security_group_id": "{{env `AWS_SECURITY_GROUP_ID`}}",
+    "pwd": "{{env `PWD`}}"
+  },
+  "builders": [
+    {
+      "ami_name": "docker {{isotime \"2006-01-02-030405\"}}",
+      "ami_virtualization_type": "hvm",
+      "associate_public_ip_address": "true",
+      "instance_type": "t2.small",
+      "region": "{{user `aws_default_region`}}",
+      "vpc_id": "{{user `aws_vpc_id`}}",
+      "subnet_id": "{{user `aws_subnet_id`}}",
+      "source_ami_filter": {
+        "filters": {
+          "name": "*ubuntu-xenial-16.04-amd64-server-*",
+          "root-device-type": "ebs",
+          "virtualization-type": "hvm"
+        },
+        "most_recent": true
+      },
+      "ssh_username": "ubuntu",
+      "tags": {
+        "OS_Version": "Ubuntu",
+        "Release": "16.04"
+      },
+      "type": "amazon-ebs",
+      "security_group_ids": [ "{{user `aws_security_group_id`}}" ]
+    }
+  ],
+  "post-processors": null,
+  "provisioners": [
+    {
+      "destination": "/tmp/docker.options",
+      "source": "{{user `pwd`}}/docker.options",
+      "type": "file"
+    },
+    {
+      "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'",
+      "inline": [
+        "apt-get update",
+        "apt-get install -y aptitude",
+        "aptitude -y update",
+        "aptitude install -y docker docker-compose unzip",
+        "mv /tmp/docker.options /etc/default/docker",
+        "systemctl enable docker.service",
+        "usermod -aG docker ubuntu"
+      ],
+      "type": "shell"
+    }
+  ]
+}
