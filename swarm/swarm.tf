@@ -4,7 +4,7 @@ resource "aws_instance" "swarm-manager" {
     count = "${var.cluster_manager_count}"
     associate_public_ip_address = "true"
     key_name = "${var.ssh_key_name}"
-    subnet_id = "${aws_subnet.a.id}"
+    subnet_id = "${element(list(aws_subnet.a.id, aws_subnet.b.id), count.index % 2)}"
     vpc_security_group_ids      = [
       "${aws_security_group.swarm.id}"
     ]
@@ -38,7 +38,7 @@ resource "aws_instance" "swarm-node" {
     count = "${var.cluster_node_count}"
     associate_public_ip_address = "true"
     key_name = "${var.ssh_key_name}"
-    subnet_id = "${aws_subnet.a.id}"
+    subnet_id = "${element(list(aws_subnet.a.id, aws_subnet.b.id), count.index % 2)}"
     vpc_security_group_ids = [
       "${aws_security_group.swarm.id}"
     ]
@@ -84,10 +84,9 @@ resource "null_resource" "cluster" {
   }
 
   provisioner "remote-exec" {
-    # Bootstrap script called with private_ip of each node in the clutser
     inline = [
       "docker -H ${element(aws_instance.swarm-manager.*.private_ip, 0)}:2375 network create --driver overlay appnet",
-      "docker -H ${element(aws_instance.swarm-manager.*.private_ip, 0)}:2375 service create --name nginx --publish 80:80 --network appnet nginx"
+      "docker -H ${element(aws_instance.swarm-manager.*.private_ip, 0)}:2375 service create --name viz --publish 8080:8080 --constraint node.role==manager --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock --network appnet manomarks/visualizer"
     ]
   }
 }

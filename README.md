@@ -8,8 +8,10 @@ Install [packer](https://www.packer.io/downloads.html)
 
 Install [terraform](https://www.terraform.io/downloads.html)
 
-Create a new user in IAM with Programmatic Access, Attach the following
-policies AmazonVPCFullAccess, AmazonEC2FullAccess.  Saving the Access Key ID
+Install [aws cli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html)
+
+Create a new user in AWS IAM with Programmatic Access and attach the following
+policies: AmazonVPCFullAccess, AmazonEC2FullAccess.  Saving the Access Key ID
 and Secret Access Key.
 
 Set environment variables for AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and
@@ -21,7 +23,7 @@ export AWS_SECRET_ACCESS_KEY=...
 export AWS_DEFAULT_REGION=ca-central-1
 ````
 
-Create a new EC2 keypair and download the pem file.
+Create a new AWS EC2 keypair and download the pem file.
 
 Set environment variables for AWS_SSH_KEY_ID and AWS_SSH_KEY
 
@@ -81,12 +83,12 @@ packer -var aws_vpc_id=... \
 
 Teardown the VPC
 ````
-terraform destroy
+terraform destroy -force
 ````
 
 Get the AMI name
 ````
-aws ec2 describe-images --owners self --query 'Images[*].[ImageId,Name,CreationDate]' --output text
+aws ec2 describe-images --owners self --filters "Name=name,Values=docker" --query 'Images[*].[ImageId,Name,CreationDate]' --output text
 ````
 
 ## Creating the Swarm
@@ -94,8 +96,15 @@ Use terraform to create several masters and slaves.
 
 ````
 cd swarm
-terraform plan
-terraform apply
+terraform plan -var 'amis={ca-central-1 = "..." }' \
+               -var aws_region=$AWS_DEFAULT_REGION \
+               -var ssh_key_filename=$AWS_SSH_KEY \
+               -var ssh_key_name=$AWS_SSH_KEY_ID
+
+terraform apply -var 'amis={ca-central-1 = "..." }' \
+                -var aws_region=$AWS_DEFAULT_REGION \
+                -var ssh_key_filename=$AWS_SSH_KEY \
+                -var ssh_key_name=$AWS_SSH_KEY_ID
 ````
 
 

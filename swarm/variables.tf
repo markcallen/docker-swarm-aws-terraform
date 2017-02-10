@@ -13,20 +13,15 @@ variable "amis" {
 
 variable "vpc_key" {
   description = "A unique identifier for the VPC."
-  default     = "mgmt"
+  default     = "swarm"
 }
 
 variable "cluster_manager_count" {
     description = "Number of manager instances for the swarm cluster."
-    default = 1
+    default = 2
 }
 
 variable "cluster_node_count" {
     description = "Number of node instances for the swarm cluster."
-    default = 1
-}
-
-variable "cluster_control_count" {
-    description = "Number of service control instances for the flocker cluster."
-    default = 1
+    default = 4
 }
