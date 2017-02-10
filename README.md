@@ -39,7 +39,7 @@ git clone https://github.com/markcallen/docker-swarm-aws-terraform.git
 
 ## Alternatives
 
-If you don't want to install packer or terraform locally you can use docker
+If you don't want to install packer, terraform or aws locally you can use docker
 images with them:
 
 terraform
@@ -54,6 +54,13 @@ packer
 PACKER="docker run -rm -v $PWD:/packer -i -t hashicorp/packer:light"
 
 $PACKER build /packer/docker-gce.json
+````
+
+aws
+````
+AWS="docker run --rm -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION -t $(tty &>/dev/null && echo "-i") mesosphere/aws-cli"
+
+$AWS ec2 describe-regions --output text
 ````
 
 ## Building a AWS AMI with docker
@@ -86,28 +93,66 @@ Teardown the VPC
 terraform destroy -force
 ````
 
+
+## Creating the Swarm
+Use terraform to create several masters and slaves.
+
 Get the AMI name
 ````
 aws ec2 describe-images --owners self --filters "Name=name,Values=docker" --query 'Images[*].[ImageId,Name,CreationDate]' --output text
 ````
 
-## Creating the Swarm
-Use terraform to create several masters and slaves.
-
+Test the configuration
 ````
 cd swarm
 terraform plan -var 'amis={ca-central-1 = "..." }' \
                -var aws_region=$AWS_DEFAULT_REGION \
                -var ssh_key_filename=$AWS_SSH_KEY \
                -var ssh_key_name=$AWS_SSH_KEY_ID
+````
 
+Build the swarm
+````
 terraform apply -var 'amis={ca-central-1 = "..." }' \
                 -var aws_region=$AWS_DEFAULT_REGION \
                 -var ssh_key_filename=$AWS_SSH_KEY \
                 -var ssh_key_name=$AWS_SSH_KEY_ID
 ````
 
+View Visualizer
 
+````
+open http://<manager ip>:8080/
+````
+
+Teardown the swarm
+````
+terraform destroy -force \
+                  -var 'amis={ca-central-1 = "..." }' \
+                  -var aws_region=$AWS_DEFAULT_REGION \
+                  -var ssh_key_filename=$AWS_SSH_KEY \
+                  -var ssh_key_name=$AWS_SSH_KEY_ID
+````
+
+## Using the swarm
+
+Log into the swarm manager
+
+View services
+````
+docker service ls
+````
+
+Deploy the docker vote app
+````
+wget https://raw.githubusercontent.com/markcallen/docker-swarm-aws-terraform/master/vote/docker-stack.yml
+docker stack deploy --compose-file docker-stack.yml vote
+````
+
+View the stack
+````
+docker stack ls
+````
 
 ## License & Authors
 - Author:: Mark Allen (mark@markcallen.com)
