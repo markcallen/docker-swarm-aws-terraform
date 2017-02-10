@@ -18,10 +18,10 @@ variable "vpc_key" {
 
 variable "cluster_manager_count" {
     description = "Number of manager instances for the swarm cluster."
-    default = 2
+    default = 1
 }
 
 variable "cluster_node_count" {
     description = "Number of node instances for the swarm cluster."
-    default = 4
+    default = 3
 }
