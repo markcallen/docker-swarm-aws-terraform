@@ -120,7 +120,6 @@ terraform apply -var 'amis={ca-central-1 = "..." }' \
 ````
 
 View Visualizer
-
 ````
 open http://<manager ip>:8080/
 ````
@@ -153,6 +152,17 @@ View the stack
 ````
 docker stack ls
 ````
+
+Vote
+````
+open http://<manager ip>:5000/
+````
+
+Vote Results
+````
+open http://<manager ip>:5001/
+````
+
 
 ## License & Authors
 - Author:: Mark Allen (mark@markcallen.com)
