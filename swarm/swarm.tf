@@ -6,7 +6,9 @@ resource "aws_instance" "swarm-manager" {
     key_name = "${var.ssh_key_name}"
     subnet_id = "${element(list(aws_subnet.a.id, aws_subnet.b.id), count.index % 2)}"
     vpc_security_group_ids      = [
-      "${aws_security_group.swarm.id}"
+      "${aws_security_group.swarm.id}",
+      "${aws_security_group.vote.id}",
+      "${aws_security_group.viz.id}"
     ]
 
     root_block_device = {
