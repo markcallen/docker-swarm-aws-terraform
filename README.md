@@ -82,10 +82,11 @@ terraform show
 
 Create the AMI
 ````
-packer -var aws_vpc_id=... \
+packer build \
+       -var aws_vpc_id=... \
        -var aws_subnet_id=... \
        -var aws_security_group_id=... \
-       build docker-aws.json
+       docker-aws.json
 ````
 
 Teardown the VPC
@@ -99,7 +100,7 @@ Use terraform to create several masters and slaves.
 
 Get the AMI name
 ````
-aws ec2 describe-images --owners self --filters "Name=name,Values=docker" --query 'Images[*].[ImageId,Name,CreationDate]' --output text
+aws ec2 describe-images --owners self --filters "Name=name,Values=docker*" --query 'Images[*].[ImageId,Name,CreationDate]' --output text
 ````
 
 Test the configuration
