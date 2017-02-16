@@ -1,6 +1,6 @@
 # Docker Swarm on AWS using Terraform
 
-Google [slides](https://docs.google.com/presentation/d/1NZcVcFMMCXWs6Tz-XGgeY0B4E_sptqnjEg4j0P-T9tg/edit?usp=sharing)
+Google [slides](https://docs.google.com/presentation/d/1NZcVcFMMCXWs6Tz-XGgeY0B4E_sptqnjEg4j0P-T9tg/edit?usp=sharing) from the Vancouver Docker Meetup, Feb 15, 2017.
 
 ## Setup
 
