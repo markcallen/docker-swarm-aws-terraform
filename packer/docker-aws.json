@@ -46,7 +46,7 @@
         "apt-get install curl linux-image-extra-$(uname -r) linux-image-extra-virtual",
         "apt-get install apt-transport-https software-properties-common ca-certificates",
         "curl -fsSL https://yum.dockerproject.org/gpg | sudo apt-key add -",
-        "sudo add-apt-repository \"deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main\"",
+        "add-apt-repository \"deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main\"",
         "apt-get update",
         "apt-get -y install docker-engine",
         "mkdir -p /etc/systemd/system/docker.service.d",
