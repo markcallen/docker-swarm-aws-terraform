@@ -28,7 +28,7 @@ AWS_SSH_KEY=/terraform/`basename ${AWS_SSH_KEY}`
 
 AWS="docker run --rm -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION -t $(tty &>/dev/null && echo "-i") mesosphere/aws-cli"
 
-DOCKER_AMI=$($AWS ec2 describe-images --owners self --filters "Name=name,Values=docker*" --query 'Images[*].[ImageId,Name,CreationDate]' --output text | sort -k 3 -r | head -1 | awk '{print $1'})
+DOCKER_AMI=$($AWS ec2 describe-images --owners self --filters "Name=name,Values=docker*" --query 'Images[*].[ImageId,Name,CreationDate]' --output text | sort -k 4 -r | head -1 | awk '{print $1'})
 
 TERRAFORM="docker run --rm -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION -v $PWD:/terraform -i -t hashicorp/terraform:light"
 
