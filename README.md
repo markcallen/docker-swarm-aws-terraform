@@ -1,5 +1,7 @@
 # Docker Swarm on AWS using Terraform
 
+Google [slides](https://docs.google.com/presentation/d/1NZcVcFMMCXWs6Tz-XGgeY0B4E_sptqnjEg4j0P-T9tg/edit?usp=sharing)
+
 ## Setup
 
 Install [docker](https://www.docker.com/products/docker)
