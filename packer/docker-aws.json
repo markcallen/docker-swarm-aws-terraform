@@ -21,6 +21,7 @@
           "root-device-type": "ebs",
           "virtualization-type": "hvm"
         },
+        "owners": ["amazon"],
         "most_recent": true
       },
       "ssh_username": "ubuntu",
@@ -42,6 +43,9 @@
     {
       "execute_command": "{{ .Vars }} sudo -E sh '{{ .Path }}'",
       "inline": [
+        "rm /var/lib/apt/lists/lock",
+        "rm /var/cache/apt/archives/lock",
+        "rm /var/lib/dpkg/lock",
         "apt-get update",
         "apt-get install curl linux-image-extra-$(uname -r) linux-image-extra-virtual",
         "apt-get install apt-transport-https software-properties-common ca-certificates",
